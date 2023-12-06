@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <chrono>
+#include "VoxelData.h"
+using namespace svogen;
 
 int main(void)
 {
@@ -53,7 +55,9 @@ int main(void)
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexStorage3D(GL_TEXTURE_3D, 1, GL_R8I, 1024, 1024, 1024);
     glBindImageTexture(3, texture, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_R8I);
-    GLubyte* textureBuffer = new GLubyte[1024 * 1024 * 1024];
+
+    VoxelData* voxelData = new VoxelData();
+    GLubyte* textureBuffer = voxelData->data;
 
     std::cout << "Added 3d texture" << std::endl;
 
@@ -66,8 +70,8 @@ int main(void)
     std::cout << "Added uniforms" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
+
     glDispatchCompute(numGroups, numGroups, numGroups);
-    
     glGetTexImage(GL_TEXTURE_3D, 0, GL_RED_INTEGER, GL_BYTE, textureBuffer);
 
     auto stop = std::chrono::high_resolution_clock::now();
