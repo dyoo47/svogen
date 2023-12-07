@@ -12,5 +12,6 @@ namespace svogen
 		VoxelData();
 		GLubyte get(int x, int y, int z);
 		void set(int x, int y, int z, GLubyte value);
+		void printBuffer(int start, int end);
 	};
 }

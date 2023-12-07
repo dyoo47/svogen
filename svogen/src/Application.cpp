@@ -92,6 +92,33 @@ int main(void)
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     std::cout << "Octree generation elapsed time: " << duration.count() << "ms" << std::endl;
+    printf("memOffset: %d\n", octree->memOffset);
+
+    //octree->printBuffer(0, 100);
+
+    std::ofstream outfile;
+    outfile.open("level.svo", std::ios::out | std::ios::binary | std::ios::trunc);
+    if (outfile.is_open()) {
+        //Convert to big endian (Java format)
+        int off = octree->memOffset;
+        GLubyte header[4];
+        header[0] = (GLubyte)(off >> 24u);
+        header[1] = (GLubyte)(off >> 16u);
+        header[2] = (GLubyte)(off >> 8u);
+        header[3] = (GLubyte)(off >> 0u);
+        outfile.write(reinterpret_cast<char*>(header), sizeof(int));
+        outfile.write((char*)octree->buffer, 1024 * 1024 * 1024);
+        printf("Successfully wrote to file.\n");
+    }
+    outfile.close();
+
+    std::ifstream infile;
+    infile.open("level.svo", std::ios::in | std::ios::binary);
+    if (infile.is_open()) {
+        infile.read((char*)textureBuffer, 1024 * 1024 * 1024);
+        voxelData->printBuffer(0, 4);
+    }
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

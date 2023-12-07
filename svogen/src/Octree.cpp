@@ -17,7 +17,7 @@ void Octree::constructOctree(int size, int curLOD, int maxLOD, int* pPos, int pP
 	
 	int* children = (int*)malloc(sizeof(int) * 8);
 	int cPos[8][3];
-	uint8_t leafMask = 0;
+	GLubyte leafMask = 0;
 	for (int n = 0; n < 8; n++) {
 		cPos[n][0] = pPos[0] + childOffsets[n][0] * cSize;
 		cPos[n][1] = pPos[1] + childOffsets[n][1] * cSize;

@@ -6,7 +6,6 @@
 namespace svogen {
 	class Octree {
 	public:
-		int* origin;
 		int memOffset;
 		GLubyte* buffer;
 		const int childOffsets[8][3] = {
