@@ -6,6 +6,8 @@
 #include <string>
 #include <chrono>
 #include "VoxelData.h"
+#include "Octree.h"
+
 using namespace svogen;
 
 int main(void)
@@ -63,9 +65,10 @@ int main(void)
 
     glUseProgram(computeProgram);
     GLuint numGroups = 1024 / 8;
-    glUniform1i(1, 0);
-    glUniform1i(2, 0);
-    glUniform1i(3, 0);
+    int origin[3] = { 0, -1024, 0 };
+    glUniform1i(1, origin[0]);
+    glUniform1i(2, origin[1]);
+    glUniform1i(3, origin[2]);
 
     std::cout << "Added uniforms" << std::endl;
 
@@ -78,8 +81,17 @@ int main(void)
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
     std::cout << glGetError() << std::endl;
-    std::cout << "Elapsed time: " << duration.count() << "ms" << std::endl;
-    std::cout << "result: " + std::to_string(textureBuffer[0]) << std::endl;
+    std::cout << "Voxel generation elapsed time: " << duration.count() << "ms" << std::endl;
+    //std::cout << "result: " + std::to_string(textureBuffer[0]) << std::endl;
+
+    Octree* octree = new Octree(1024);
+
+    start = std::chrono::high_resolution_clock::now();
+    int startPos[] = {0, 0, 0};
+    octree->constructOctree(1024, 0, 9, startPos, 0, voxelData);
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    std::cout << "Octree generation elapsed time: " << duration.count() << "ms" << std::endl;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
 #include <GLFW/glfw3.h>
+#include "VoxelData.h"
 
 namespace svogen {
 	class Octree {
 	public:
-		std::vector<int> origin;
+		int* origin;
 		int memOffset;
 		GLubyte* buffer;
 		const int childOffsets[8][3] = {
@@ -20,8 +20,17 @@ namespace svogen {
 			{1, 1, 1}
 		};
 
-		Octree(int memSizeKb, std::vector<int> origin);
+		Octree(int memSizeKb);
+		~Octree();
 
-		void constructOctree(int size, int curLOD, int maxLOD, std::vector<int> pPos, int pPointer);
+		void constructOctree(int size, int curLOD, int maxLOD, int* pPos, int pPointer, VoxelData* voxelData);
+
+		int createLeafNode(GLubyte value, GLshort normal);
+		int createNode(GLubyte value);
+		void setChildPointer(int parentPointer, int childPointer);
+		void setLeafMask(int parentPointer, GLubyte leafMask);
+		GLubyte getValue(int parentPointer);
+
+		void printBuffer(int start, int end);
 	};
 }
